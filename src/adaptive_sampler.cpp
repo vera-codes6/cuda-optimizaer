@@ -99,6 +99,7 @@ ExpectedDouble AdaptiveSampler::EstimatedMean() {
 // are 95% confident that the true mean lies within the margin of error
 // calculated from the sample mean, which we set to be less than x% of the
 // observed standard deviation of the sample.
+
 bool AdaptiveSampler::ShouldContinue() {
   if (num_samples_ <= 1) {
     return true;
@@ -110,7 +111,7 @@ bool AdaptiveSampler::ShouldContinue() {
 
   // The standard error quantifies how much the sample mean is likely to vary
   // from the true population mean.
-  double std_error = std::sqrt(variance / beta);
+  double std_error = (double) std::sqrt(variance / beta);
   // Use num_samples - 1 because the mean estimate reduces the degrees of
   // freedom. That is, if if we had the mean and n-1 values, we could
   // reconstruct the missing value. So we don't have n degrees of freedom in
@@ -121,12 +122,13 @@ bool AdaptiveSampler::ShouldContinue() {
   }
 
   // The standard deviation quantifies the overall data variability.
-  double std_dev = std::sqrt(variance);
+  double std_dev = (double) std::sqrt(variance);
   double margin_of_error = *t_result * std_error;
   double required_margin_of_error = relative_precision_ * std_dev;
   // The margin of error starts large and shrinks as we gather data because it's
   // proportional to sqrt(1/n). So keep sampling if the margin of error is
   // larger than the required margin of error.
+
   return margin_of_error > required_margin_of_error;
 }
 
